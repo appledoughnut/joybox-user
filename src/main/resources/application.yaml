@@ -1,0 +1,42 @@
+product:
+  db:
+    url: <helm-secret>
+    username: <helm-secret>
+    password: <helm-secret>
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${product.db.url}
+    username: ${product.db.username}
+    password: ${product.db.password}
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+
+cloud:
+  aws:
+    bucket: joybox-user-vendor-logo
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    url: /openapi.yaml
+    path: /api-docs
+
+server:
+  port: 80
+
+management:
+  endpoints:
+    web:
+      base-path: /

@@ -1,4 +1,4 @@
-package app.joybox.user
+package app.joybox
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
