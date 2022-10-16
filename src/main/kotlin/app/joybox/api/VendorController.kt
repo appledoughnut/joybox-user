@@ -1,6 +1,7 @@
 package app.joybox.api
 
 import app.joybox.api.request.SignUpRequest
+import app.joybox.domain.vendor.DuplicatedEmailException
 import app.joybox.domain.vendor.VendorService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -18,7 +19,12 @@ class VendorController(
     @PostMapping("/signup")
     fun signUp(@RequestBody @Valid request: SignUpRequest): ResponseEntity<Any> {
         val command = request.toCommand()
-        vendorService.signUp(command)
-        return ResponseEntity.ok().build()
+
+        return try {
+            vendorService.signUp(command)
+            ResponseEntity.ok().build()
+        } catch (e: DuplicatedEmailException) {
+            ResponseEntity.badRequest().build()
+        }
     }
 }

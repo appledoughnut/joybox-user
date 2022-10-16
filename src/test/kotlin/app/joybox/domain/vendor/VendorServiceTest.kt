@@ -1,0 +1,57 @@
+package app.joybox.domain.vendor
+
+import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
+import io.mockk.slot
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.security.crypto.password.PasswordEncoder
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(MockKExtension::class)
+internal class VendorServiceTest {
+
+    @MockK(relaxed = true)
+    lateinit var vendorRepository: VendorRepository
+
+    @MockK
+    lateinit var passwordEncoder: PasswordEncoder
+
+    @InjectMockKs
+    lateinit var vendorService: VendorService
+
+    @Test
+    fun `Should throw DuplicatedEmailException when sign up with existing email`() {
+        val command = SignUpCommand("email@email.com", "password", "name")
+
+        every { vendorRepository.existsByEmail(command.email) } returns true
+
+        assertThrows<DuplicatedEmailException> {
+            vendorService.signUp(command)
+        }
+    }
+
+    @Test
+    fun `Should successfully save vendor`() {
+        val command = SignUpCommand("email@email.com", "password", "name")
+        val encodedPassword = "encoded password"
+
+        every { vendorRepository.existsByEmail(command.email) } returns false
+        every { passwordEncoder.encode(command.password) } returns encodedPassword
+
+        val slot = slot<Vendor>()
+        every { vendorRepository.save(capture(slot)) } returns Vendor("","","")
+
+        vendorService.signUp(command)
+
+        assertEquals(command.email, slot.captured.email)
+        assertEquals(encodedPassword, slot.captured.password)
+        assertEquals(command.name, slot.captured.name)
+
+    }
+}
