@@ -1,5 +1,6 @@
 package app.joybox.api
 
+import app.joybox.api.request.LoginRequest
 import app.joybox.api.request.SignUpRequest
 import app.joybox.domain.vendor.DuplicatedEmailException
 import app.joybox.domain.vendor.VendorService
@@ -26,5 +27,11 @@ class VendorController(
         } catch (e: DuplicatedEmailException) {
             ResponseEntity.badRequest().build()
         }
+    }
+
+    @PostMapping("/login")
+    fun login(@RequestBody request: LoginRequest) {
+        val command = request.toCommand()
+        return vendorService.login(command)
     }
 }
