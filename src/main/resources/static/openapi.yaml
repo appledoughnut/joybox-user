@@ -1,0 +1,72 @@
+openapi: 3.0.1
+info:
+  version: 1.0.0
+  title: Product API
+  description: Apis to manage vendors and customers
+
+paths:
+  /api/vendor/signup:
+    post:
+      tags:
+        - Vendor
+      summary: Vendor signup
+      operationId: vendorSignup
+      description: Vendor signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VendorSignup"
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Failed response
+  /api/vendor/signin:
+    post:
+      tags:
+        - Vendor
+      summary: Vendor sign-in
+      operationId: vendorSignIn
+      description: Vendor sign-in
+      requestBody:
+        content:
+          application/josn:
+            schema:
+              $ref: "#/components/schemas/VendorSignIn"
+      responses:
+        '200':
+          description: Successful response
+#        '400':
+#          description: Failed response
+
+components:
+  schemas:
+    VendorSignup:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          description: Email address of vendor
+          example: example@email.com
+        password:
+          type: string
+          description: Password of vendor
+          example: password1234
+    VendorSignIn:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          description: Email address of vendor
+          example: example@email.com
+        password:
+          type: string
+          description: Password of vendor
+          example: password1234
