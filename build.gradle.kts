@@ -27,11 +27,13 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.flywaydb:flyway-core")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
 
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("com.h2database:h2")
     testImplementation("io.mockk:mockk:1.13.2")
 }
 

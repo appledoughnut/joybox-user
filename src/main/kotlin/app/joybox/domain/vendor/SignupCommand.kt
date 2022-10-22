@@ -1,6 +1,6 @@
 package app.joybox.domain.vendor
 
-class SignUpCommand(
+class SignupCommand(
     val email: String,
     val password: String,
     val name: String

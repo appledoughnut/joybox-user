@@ -1,5 +1,6 @@
 package app.joybox.domain.vendor
 
+import app.joybox.domain.jwt.JwtProvider
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -22,23 +23,26 @@ internal class VendorServiceTest {
     @MockK
     lateinit var passwordEncoder: PasswordEncoder
 
+    @MockK
+    lateinit var jwtProvider: JwtProvider
+
     @InjectMockKs
     lateinit var vendorService: VendorService
 
     @Test
     fun `Should throw DuplicatedEmailException when sign up with existing email`() {
-        val command = SignUpCommand("email@email.com", "password", "name")
+        val command = SignupCommand("email@email.com", "password", "name")
 
         every { vendorRepository.existsByEmail(command.email) } returns true
 
         assertThrows<DuplicatedEmailException> {
-            vendorService.signUp(command)
+            vendorService.signup(command)
         }
     }
 
     @Test
     fun `Should successfully save vendor`() {
-        val command = SignUpCommand("email@email.com", "password", "name")
+        val command = SignupCommand("email@email.com", "password", "name")
         val encodedPassword = "encoded password"
 
         every { vendorRepository.existsByEmail(command.email) } returns false
@@ -47,11 +51,27 @@ internal class VendorServiceTest {
         val slot = slot<Vendor>()
         every { vendorRepository.save(capture(slot)) } returns Vendor("","","")
 
-        vendorService.signUp(command)
+        vendorService.signup(command)
 
         assertEquals(command.email, slot.captured.email)
         assertEquals(encodedPassword, slot.captured.password)
         assertEquals(command.name, slot.captured.name)
 
+    }
+
+    @Test
+    fun `Should successfully return JWT token`() {
+        val email = "valid@email.com"
+        val password = "password"
+        val encodedPassword = "encoded password"
+        val name = "name"
+        val token = "JWT token"
+
+        val command = LoginCommand(email, password)
+
+        val vendor = Vendor(email, encodedPassword, name)
+        every { vendorRepository.findByEmail(command.email) } returns vendor
+        every { passwordEncoder.matches(password, encodedPassword) } returns true
+        every { jwtProvider.generateJwtToken(vendor)} returns token
     }
 }
