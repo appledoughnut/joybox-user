@@ -51,13 +51,13 @@ class VendorE2ETest {
         val loginRequest = LoginRequest(email, password)
 
         template.postForEntity("/api/vendor/signup", signupRequest, ResponseEntity::class.java)
-        val loginResponse = template.postForEntity("/api/vendor/login", loginRequest, ResponseEntity::class.java)
+        val loginResponse = template.postForEntity("/api/vendor/login", loginRequest, Unit::class.java)
 
         val cookie = loginResponse.headers["Set-Cookie"]!![0]
         val header = HttpHeaders()
         header.add("Cookie", cookie)
 
-        val response = template.exchange("/api/vendor/me", HttpMethod.GET, HttpEntity<Any>(header), ResponseEntity::class.java)
+        val response = template.exchange("/api/vendor/me", HttpMethod.GET, HttpEntity<Any>(header), Unit::class.java)
         assertEquals(HttpStatus.OK, response.statusCode)
     }
 }

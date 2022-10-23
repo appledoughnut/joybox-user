@@ -3,10 +3,7 @@ package app.joybox.api
 import app.joybox.api.request.LoginRequest
 import app.joybox.api.request.SignupRequest
 import app.joybox.api.response.MeResponse
-import app.joybox.domain.vendor.DuplicatedEmailException
-import app.joybox.domain.vendor.InvalidAuthenticationException
-import app.joybox.domain.vendor.VendorPrincipal
-import app.joybox.domain.vendor.VendorService
+import app.joybox.domain.vendor.*
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -47,13 +44,15 @@ class VendorController(
             response.addCookie(cookie)
 
             ResponseEntity.ok().build()
-        } catch (e: InvalidAuthenticationException) {
+        } catch (e: VendorNotFoundException) {
+            ResponseEntity.badRequest().build()
+        } catch (e: PasswordNotMatchedException) {
             ResponseEntity.badRequest().build()
         }
     }
 
     @GetMapping("/me")
-    fun getMe(@AuthenticationPrincipal principal: VendorPrincipal): ResponseEntity<MeResponse>{
+    fun getMe(@AuthenticationPrincipal principal: VendorPrincipal): ResponseEntity<MeResponse> {
         val vendor = vendorService.getVendor(principal.vendorId)
         val response = MeResponse.from(vendor)
         return ResponseEntity.ok(response)

@@ -41,7 +41,7 @@ internal class VendorServiceTest {
     }
 
     @Test
-    fun `Should successfully save vendor`() {
+    fun `Should successfully save vendor when signup`() {
         val command = SignupCommand("email@email.com", "password", "name")
         val encodedPassword = "encoded password"
 
@@ -60,7 +60,7 @@ internal class VendorServiceTest {
     }
 
     @Test
-    fun `Should successfully return JWT token`() {
+    fun `Should successfully return JWT token when login`() {
         val email = "valid@email.com"
         val password = "password"
         val encodedPassword = "encoded password"
