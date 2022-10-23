@@ -1,7 +1,8 @@
 package app.joybox.api
 
-import app.joybox.config.SecurityConfig
+import app.joybox.domain.vendor.Vendor
 import app.joybox.domain.vendor.VendorService
+import app.joybox.domain.vendor.WithMockVendor
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
@@ -14,15 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import java.util.stream.Stream
 
 @WebMvcTest
-@Import(SecurityConfig::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class VendorControllerTest {
 
@@ -34,6 +34,7 @@ internal class VendorControllerTest {
         @Bean
         fun vendorService() = mockk<VendorService>()
     }
+
 
     @Autowired
     private lateinit var vendorService: VendorService
@@ -127,5 +128,23 @@ internal class VendorControllerTest {
             status { HttpStatus.OK }
             cookie { token }
         }
+    }
+
+    @Test
+    @WithMockVendor(vendorId = 1L)
+    fun `Should return 200 and vendor info when get me`() {
+        val email = "valid@email.com"
+        val password = "password"
+        val name = "name"
+        val vendor = Vendor(email, password, name)
+
+        every { vendorService.getVendor(any()) } returns vendor
+
+        mvc.get("/api/vendor/me")
+            .andExpect {
+                status { HttpStatus.OK }
+                jsonPath("$.name") { vendor.name }
+                jsonPath("$.logoUrl") { vendor.logoUrl}
+            }
     }
 }
