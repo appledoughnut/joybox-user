@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service
 
 class DuplicatedEmailException : RuntimeException()
 class InvalidAuthenticationException : RuntimeException()
+class VendorNotFoundException : RuntimeException()
+class PasswordNotMatchedException : RuntimeException()
 
 @Service
 class VendorService(
@@ -28,13 +30,18 @@ class VendorService(
 
     fun login(command: LoginCommand): String {
         try {
-            val vendor = vendorRepository.findByEmail(command.email) ?: throw RuntimeException() //TODO
+            val vendor = vendorRepository.findByEmail(command.email) ?: throw VendorNotFoundException()
             if (!passwordEncoder.matches(command.password, vendor.password)) {
-                throw RuntimeException() // TODO
+                throw PasswordNotMatchedException()
             }
             return jwtProvider.generateJwtToken(vendor)
         } catch (e: AuthenticationException) {
             throw InvalidAuthenticationException()
         }
     }
+
+    fun getVendor(vendorId: Long): Vendor {
+        return vendorRepository.findById(vendorId).orElseThrow(::VendorNotFoundException)
+    }
 }
+
