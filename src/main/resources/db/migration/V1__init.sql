@@ -1,6 +1,6 @@
 CREATE TABLE vendors
 (
-    id          INT primary key,
+    id          SERIAL primary key,
     email       VARCHAR(127) NOT NULL UNIQUE,
     password    VARCHAR(127) NOT NULL,
     name        VARCHAR(255) NOT NULL,

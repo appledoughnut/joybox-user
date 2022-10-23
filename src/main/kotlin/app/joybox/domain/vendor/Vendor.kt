@@ -8,6 +8,7 @@ import javax.persistence.*
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
+@Table(name = "vendors")
 class Vendor(
     email: String,
     password: String,
