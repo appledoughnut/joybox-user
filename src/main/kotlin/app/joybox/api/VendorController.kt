@@ -21,9 +21,8 @@ class VendorController(
 ) {
     @PostMapping("/signup")
     fun signup(@RequestBody @Valid request: SignupRequest): ResponseEntity<Any> {
-        val command = request.toCommand()
         return try {
-            vendorService.signup(command)
+            vendorService.signup(request.toCommand())
             ResponseEntity.ok().build()
         } catch (e: DuplicatedEmailException) {
             ResponseEntity.badRequest().build()
@@ -42,7 +41,7 @@ class VendorController(
 
             cookie.secure = true
             cookie.isHttpOnly = true
-            cookie.path = "/"
+//            cookie.path = "/"
 
             response.addCookie(cookie)
 
@@ -54,6 +53,6 @@ class VendorController(
 
     @GetMapping("/me")
     fun getMe(@AuthenticationPrincipal principal: VendorPrincipal): ResponseEntity<Any>{
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok().build() // TODO
     }
 }

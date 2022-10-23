@@ -28,9 +28,7 @@ class JwtProvider(
                 .parseClaimsJws(token)
 
             val vendorIdString: String = claimsJwt.body["vendorId"] as String
-
             vendorIdString.toLong()
-
         } catch (e: Exception) {
             throw InvalidJwtTokenException()
         }

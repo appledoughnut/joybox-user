@@ -26,9 +26,13 @@ class JwtAuthenticationFilter(
             return
         }
 
-        val token = cookies.filter { it.name == "jwt" }[0].value
+        val token = cookies.find { it.name == "jwt" }
+        if (token == null) {
+            response.status = HttpStatus.UNAUTHORIZED.value()
+            return
+        }
 
-        val vendorId = jwtProvider.parseVendorId(token)
+        val vendorId = jwtProvider.parseVendorId(token.value)
         SecurityContextHolder.getContext().authentication =
             UsernamePasswordAuthenticationToken(VendorPrincipal(vendorId), null)
 
