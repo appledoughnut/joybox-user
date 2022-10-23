@@ -21,7 +21,7 @@ class JwtAuthenticationFilter(
         filterChain: FilterChain
     ) {
         val cookies = request.cookies
-        if (cookies.isEmpty()) {
+        if (cookies.isNullOrEmpty()) {
             response.status = HttpStatus.UNAUTHORIZED.value()
             return
         }
