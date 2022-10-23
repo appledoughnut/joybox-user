@@ -4,12 +4,11 @@ import app.joybox.api.request.LoginRequest
 import app.joybox.api.request.SignupRequest
 import app.joybox.domain.vendor.DuplicatedEmailException
 import app.joybox.domain.vendor.InvalidAuthenticationException
+import app.joybox.domain.vendor.VendorPrincipal
 import app.joybox.domain.vendor.VendorService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.*
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
@@ -51,5 +50,10 @@ class VendorController(
         } catch (e: InvalidAuthenticationException) {
             ResponseEntity.badRequest().build()
         }
+    }
+
+    @GetMapping("/me")
+    fun getMe(@AuthenticationPrincipal principal: VendorPrincipal): ResponseEntity<Any>{
+        return ResponseEntity.ok().build()
     }
 }

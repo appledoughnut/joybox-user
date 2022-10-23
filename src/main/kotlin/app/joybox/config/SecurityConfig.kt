@@ -1,14 +1,15 @@
 package app.joybox.config
 
+import app.joybox.domain.jwt.JwtProvider
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import java.security.KeyFactory
 import java.security.KeyPair
 import java.security.spec.PKCS8EncodedKeySpec
@@ -25,12 +26,15 @@ class SecurityConfig {
     fun passwordEncoder() = BCryptPasswordEncoder()
 
     @Bean
-    fun authenticationManager(configuration: AuthenticationConfiguration): AuthenticationManager? {
-        return configuration.authenticationManager
+    fun jwtProvider(keyPair: KeyPair) = JwtProvider(keyPair)
+
+    @Bean
+    fun webSecurityCustomizer(): WebSecurityCustomizer {
+        return WebSecurityCustomizer { it.ignoring().antMatchers(*PUBLIC_ENDPOINTS) }
     }
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    fun securityFilterChain(http: HttpSecurity, jwtProvider: JwtProvider): SecurityFilterChain {
         http
             .csrf().disable()
             .authorizeRequests()
@@ -38,7 +42,10 @@ class SecurityConfig {
 
             .and()
             .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+            .and()
+            .addFilterBefore(JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }
 
