@@ -4,6 +4,10 @@ product:
     username: <helm-secret>
     password: <helm-secret>
 
+jwt:
+  private-key: <helm-secret>
+  public-key: <helm-secret>
+
 spring:
   datasource:
     url: jdbc:postgresql://${product.db.url}

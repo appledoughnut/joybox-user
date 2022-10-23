@@ -1,14 +1,16 @@
 package app.joybox.api
 
 import app.joybox.api.request.LoginRequest
-import app.joybox.api.request.SignUpRequest
+import app.joybox.api.request.SignupRequest
 import app.joybox.domain.vendor.DuplicatedEmailException
+import app.joybox.domain.vendor.InvalidAuthenticationException
+import app.joybox.domain.vendor.VendorPrincipal
 import app.joybox.domain.vendor.VendorService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.*
+import javax.servlet.http.Cookie
+import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 @RestController
@@ -18,11 +20,9 @@ class VendorController(
     private val vendorService: VendorService
 ) {
     @PostMapping("/signup")
-    fun signUp(@RequestBody @Valid request: SignUpRequest): ResponseEntity<Any> {
-        val command = request.toCommand()
-
+    fun signup(@RequestBody @Valid request: SignupRequest): ResponseEntity<Any> {
         return try {
-            vendorService.signUp(command)
+            vendorService.signup(request.toCommand())
             ResponseEntity.ok().build()
         } catch (e: DuplicatedEmailException) {
             ResponseEntity.badRequest().build()
@@ -30,8 +30,29 @@ class VendorController(
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody request: LoginRequest) {
+    fun login(@RequestBody request: LoginRequest, response: HttpServletResponse): ResponseEntity<Any> {
         val command = request.toCommand()
-        return vendorService.login(command)
+        return try {
+            val token = vendorService.login(command)
+
+            val cookie = Cookie("jwt", token)
+
+            cookie.maxAge = 24 * 60 * 60
+
+            cookie.secure = true
+            cookie.isHttpOnly = true
+//            cookie.path = "/"
+
+            response.addCookie(cookie)
+
+            ResponseEntity.ok().build()
+        } catch (e: InvalidAuthenticationException) {
+            ResponseEntity.badRequest().build()
+        }
+    }
+
+    @GetMapping("/me")
+    fun getMe(@AuthenticationPrincipal principal: VendorPrincipal): ResponseEntity<Any>{
+        return ResponseEntity.ok().build() // TODO
     }
 }

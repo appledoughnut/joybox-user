@@ -22,18 +22,18 @@ paths:
           description: Successful response
         '400':
           description: Failed response
-  /api/vendor/signin:
+  /api/vendor/login:
     post:
       tags:
         - Vendor
-      summary: Vendor sign-in
-      operationId: vendorSignIn
-      description: Vendor sign-in
+      summary: Vendor login
+      operationId: vendorLogin
+      description: Vendor login
       requestBody:
         content:
           application/josn:
             schema:
-              $ref: "#/components/schemas/VendorSignIn"
+              $ref: "#/components/schemas/VendorLogin"
       responses:
         '200':
           description: Successful response
@@ -47,6 +47,7 @@ components:
       required:
         - email
         - password
+        - name
       properties:
         email:
           type: string
@@ -56,7 +57,11 @@ components:
           type: string
           description: Password of vendor
           example: password1234
-    VendorSignIn:
+        name:
+          type: string
+          description: name of vendor
+          example: joybox games
+    VendorLogin:
       type: object
       required:
         - email
