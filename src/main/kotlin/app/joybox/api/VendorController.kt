@@ -37,7 +37,7 @@ class VendorController(
 
             cookie.maxAge = 24 * 60 * 60
 
-            cookie.secure = true
+//            cookie.secure = true
             cookie.isHttpOnly = true
 //            cookie.path = "/"
 
