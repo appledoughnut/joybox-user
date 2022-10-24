@@ -51,9 +51,9 @@ class SecurityConfig {
 
     @Bean
     fun jwtKeyPair(
-        @Value("\${jwt.public-key}")
+        @Value("\${jwt.key.public}")
         publicKeyString: String,
-        @Value("\${jwt.private-key}")
+        @Value("\${jwt.key.private}")
         privateKeyString: String
     ): KeyPair {
         val keyFactory = KeyFactory.getInstance("RSA")

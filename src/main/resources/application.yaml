@@ -5,8 +5,9 @@ product:
     password: <helm-secret>
 
 jwt:
-  private-key: <helm-secret>
-  public-key: <helm-secret>
+  key:
+    private: <helm-secret>
+    public: <helm-secret>
 
 spring:
   datasource:
@@ -39,6 +40,16 @@ springdoc:
 
 server:
   port: 80
+#  tomcat:
+#    accesslog:
+#      enabled: true
+#      directory: logs
+#      suffix: .log
+#      prefix: access_log
+#      file-date-format: .yyyy-MM-dd
+#      pattern: %{yyyy-MM-dd HH:mm:ss}t %s %r %{User-Agent}i %{Referer}i %a %b
+#    basedir: .
+
 
 management:
   endpoints:
