@@ -1,4 +1,4 @@
-product:
+user:
   db:
     url: <helm-secret>
     username: <helm-secret>
@@ -11,9 +11,9 @@ jwt:
 
 spring:
   datasource:
-    url: jdbc:postgresql://${product.db.url}
-    username: ${product.db.username}
-    password: ${product.db.password}
+    url: jdbc:postgresql://${user.db.url}
+    username: ${user.db.username}
+    password: ${user.db.password}
 
   jpa:
     properties:
