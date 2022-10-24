@@ -2,4 +2,4 @@
 
 echo "Init localstack"
 echo "Creating s3"
-awslocal s3 mb s3://vendor-logo
+awslocal s3 mb s3://joybox-user-vendor-logo
