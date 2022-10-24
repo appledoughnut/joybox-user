@@ -55,3 +55,7 @@ management:
   endpoints:
     web:
       base-path: /
+
+logging:
+  level:
+    app.joybox: DEBUG

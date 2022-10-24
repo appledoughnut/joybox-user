@@ -73,5 +73,7 @@ internal class VendorServiceTest {
         every { vendorRepository.findByEmail(command.email) } returns vendor
         every { passwordEncoder.matches(password, encodedPassword) } returns true
         every { jwtProvider.generateJwtToken(vendor)} returns token
+
+        assertEquals(token, vendorService.login(command))
     }
 }

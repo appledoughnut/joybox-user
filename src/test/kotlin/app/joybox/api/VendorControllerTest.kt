@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.post
 import java.util.stream.Stream
 import javax.servlet.http.Cookie
 
-
 @WebMvcTest
 @Import(SecurityConfig::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
