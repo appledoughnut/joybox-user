@@ -17,7 +17,7 @@ import java.security.spec.X509EncodedKeySpec
 import java.util.*
 
 
-val PUBLIC_ENDPOINTS = arrayOf("/api/vendor/signup", "/api/vendor/login", "/health")
+val PUBLIC_ENDPOINTS = arrayOf("/api/vendor/signup", "/api/vendor/login", "/health", "/openapi.yaml")
 
 @Configuration
 class SecurityConfig {
